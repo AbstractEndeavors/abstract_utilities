@@ -12,7 +12,6 @@ Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.11
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
-License-File: LICENSE
 Requires-Dist: pathlib>=1.0.1
 Requires-Dist: abstract_security>=0.0.1
 Requires-Dist: yt_dlp>=2023.10.13
@@ -23,7 +22,6 @@ Dynamic: classifier
 Dynamic: description
 Dynamic: description-content-type
 Dynamic: home-page
-Dynamic: license-file
 Dynamic: requires-dist
 Dynamic: requires-python
 Dynamic: summary
