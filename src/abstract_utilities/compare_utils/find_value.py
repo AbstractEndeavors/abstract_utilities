@@ -87,29 +87,19 @@ def any_match(
         if pred(v):
             return True
     return False
-
-def get_first_match(
-    obj: JSONLike,
-    *,
-    terms: Iterable[str],
-    **kw
-) -> Tuple[PathType, Any] | None:
-    """Return first (path, value) match, or None."""
+def get_first_value(obj: JSONLike, *, terms: Iterable[str], **kw) -> Optional[Any]:
+    """Return just the first matching value, or None."""
     pred = _mk_predicate(terms, **kw)
-    for p, v in iter_values(obj):
+    for _, v in iter_values(obj):
         if pred(v):
-            return (p, v)
+            return v
     return None
-def get_all_match(
-    obj: JSONLike,
-    *,
-    terms: Iterable[str],
-    **kw
-) -> Tuple[PathType, Any] | None:
-    """Return first (path, value) match, or None."""
-    matches = []
+
+def get_all_values(obj: JSONLike, *, terms: Iterable[str], **kw) -> List[Any]:
+    """Return all matching values as a flat list."""
     pred = _mk_predicate(terms, **kw)
-    for p, v in iter_values(obj):
+    results: List[Any] = []
+    for _, v in iter_values(obj):
         if pred(v):
-            matches.append((p, v))
-    return matches
+            results.append(v)
+    return results
