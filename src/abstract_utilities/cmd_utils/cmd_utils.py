@@ -51,7 +51,7 @@ import os
 import pexpect
 import subprocess
 from abstract_security.envy_it import find_and_read_env_file, get_env_value
-from .time_utils import get_sleep
+from ..time_utils import get_sleep
 def get_output(p):
     """
     Get the output of a subprocess command.
@@ -159,40 +159,35 @@ def cmd_run_sudo(cmd: str, password: str = None, key: str = None, output_text: s
         cmd_run(f'echo "{get_env_value(key)}" | sudo -S -k {cmd}',output_text)
     else:
         cmd_run(f'echo "{get_sudo_password()}" | sudo -S -k {cmd}',output_text)
-def cmd_run(cmd: str, output_text: str = None,print_output:bool=False) -> None:
-    """
-    Execute a command and store its output in the specified file.
+def cmd_run(cmd: str, output_text: str = None, print_output: bool = False) -> None:
+    if output_text is None:
+        output_text = get_output_text()
 
-    Args:
-        cmd (str): Command to be executed.
-        output_text (str, optional): Path to store the command output. Defaults to None.
-    """
-    if output_text == None:
-        output_text=get_output_text()
-    # Clear the output file before running the command
-    with open(get_output_text(), 'w') as f:
+    # Clear output file
+    with open(output_text, 'w') as f:
         pass
-    cmd += f' >> '+output_text+'; echo END_OF_CMD >> '+output_text  # Add the delimiter at the end of cmd
+
+    # Append output redirection
+    full_cmd = f'{cmd} >> {output_text}; echo END_OF_CMD >> {output_text}'
+
     if print_output:
-        print(cmd)
-    output = subprocess.call(f'gnome-terminal -- bash -c "{cmd}"', shell=True)
-    # Wait until the delimiter appears in the output file
+        print(full_cmd)
+
+    subprocess.call(full_cmd, shell=True)
+
+    # Wait until END_OF_CMD appears
     while True:
-        get_sleep(sleep_timer=0.5)  # Sleep for a while to reduce CPU usage
+        get_sleep(sleep_timer=0.5)
         with open(output_text, 'r') as f:
             lines = f.readlines()
-            if lines:  # Check if the file is not empty
-                last_line = lines[-1].strip()  # Read the last line of the file
-                if last_line == 'END_OF_CMD':
-                    break  # Break the loop if the delimiter is found
-    # Print the command and its output
+            if lines and lines[-1].strip() == 'END_OF_CMD':
+                break
+
     if print_output:
         with open(output_text, 'r') as f:
-            output = f.read().strip()  # Read the entire output
-        print_cmd(cmd, output)
-        
-    # Delete the output file and the bash script
-    os.remove(get_output_text())
+            print_cmd(full_cmd, f.read().strip())
+
+    os.remove(output_text)
 
 def pexpect_cmd_with_args(command: str, child_runs: list, output_text: str = os.getcwd(),print_output:bool=False) -> int:
     """
