@@ -9,7 +9,7 @@ Date: 05/31/2023
 Version: 0.1.2
 """
 import string
-from .type_utils import is_number,make_list
+from ..type_utils import is_number,make_list
 def get_comp(string:str, string_2:str):
     """
     Calculates the similarity between two strings.
