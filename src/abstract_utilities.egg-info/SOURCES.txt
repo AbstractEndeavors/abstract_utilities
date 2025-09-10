@@ -34,6 +34,7 @@ src/abstract_utilities/cmd_utils/__init__.py
 src/abstract_utilities/cmd_utils/cmd_utils.py
 src/abstract_utilities/cmd_utils/user_utils.py
 src/abstract_utilities/compare_utils/__init__.py
+src/abstract_utilities/compare_utils/best_match.py
 src/abstract_utilities/compare_utils/compare_utils.py
 src/abstract_utilities/compare_utils/find_value.py
 src/abstract_utilities/robust_reader/__init__.py
