@@ -87,7 +87,7 @@ def any_match(
         if pred(v):
             return True
     return False
-def get_first_value(obj: JSONLike, *, terms: Iterable[str], **kw) -> Optional[Any]:
+def get_first_match(obj: JSONLike, *, terms: Iterable[str], **kw) -> Optional[Any]:
     """Return just the first matching value, or None."""
     pred = _mk_predicate(terms, **kw)
     for _, v in iter_values(obj):
@@ -95,7 +95,7 @@ def get_first_value(obj: JSONLike, *, terms: Iterable[str], **kw) -> Optional[An
             return v
     return None
 
-def get_all_values(obj: JSONLike, *, terms: Iterable[str], **kw) -> List[Any]:
+def get_all_match(obj: JSONLike, *, terms: Iterable[str], **kw) -> List[Any]:
     """Return all matching values as a flat list."""
     pred = _mk_predicate(terms, **kw)
     results: List[Any] = []
