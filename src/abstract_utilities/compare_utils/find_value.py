@@ -100,3 +100,16 @@ def get_first_match(
         if pred(v):
             return (p, v)
     return None
+def get_all_match(
+    obj: JSONLike,
+    *,
+    terms: Iterable[str],
+    **kw
+) -> Tuple[PathType, Any] | None:
+    """Return first (path, value) match, or None."""
+    matches = []
+    pred = _mk_predicate(terms, **kw)
+    for p, v in iter_values(obj):
+        if pred(v):
+            matches.append((p, v))
+    return matches

@@ -133,7 +133,8 @@ from .math_utils import (convert_to_percentage,
 from .compare_utils import (create_new_name,
                             get_last_comp_list,
                             get_closest_match_from_list,
-                            get_first_match)
+                            get_first_match,
+                            get_all_match)
 from .thread_utils import ThreadManager
 from .history_utils import HistoryManager
 from .abstract_classes import *
