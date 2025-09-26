@@ -3,7 +3,6 @@ from datetime import timedelta
 from datetime import datetime
 from typing import *
 from .hash_utils import *
-from .dynimport import get_abstract_import,import_symbols_to_parent,call_for_all_tabs
 
 from .json_utils import (unified_json_loader,
                          find_keys,
@@ -151,4 +150,5 @@ from .error_utils import try_func
 from .class_utils import alias,get_class_inputs,get_set_attr
 from .robust_reader import *
 from .robust_readers import *
+from .dynimport import get_abstract_import,import_symbols_to_parent,call_for_all_tabs
 
