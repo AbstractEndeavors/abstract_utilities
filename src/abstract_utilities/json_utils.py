@@ -188,6 +188,41 @@ def find_keys(data, target_keys):
     values = []
     _find_keys_recursive(data, target_keys, values)
     return values
+def try_json_dumps_spec(obj, logger=True, level='error', file_path=None, **kwargs):
+    """
+    Attempts to serialize an object to JSON using json.dumps or json.dump.
+    
+    Args:
+        obj: The Python object to serialize (e.g., dict, list, str, int, etc.).
+        logger: Logger object or None to use _default_logger.
+        level: Logging level for errors (default: 'error').
+        file_path: If provided, writes JSON to this file using json.dump.
+        **kwargs: Additional arguments to pass to json.dumps or json.dump (e.g., indent, sort_keys).
+    
+    Returns:
+        str: The JSON-serialized string if file_path is None and serialization succeeds.
+        None: If serialization fails or file_path is provided (in which case it writes to the file).
+    
+    Raises:
+        ValueError: If file_path is provided but the file cannot be written.
+    """
+    
+    try:
+        if file_path:
+            # Use json.dump to write to a file
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(obj, f, **kwargs)
+            return None
+        else:
+            # Use json.dumps to return a string
+            return json.dumps(obj)
+    except (TypeError, OverflowError, ValueError) as e:
+        if log_callable:
+            print_or_log(f"Exception in json.dumps/dump: {e}")
+        return None
+def run_it(endpoint,**kwargs):
+    response= make_request_link('typicaly',endpoint,data=kwargs)
+    return response
 def get_logNone(e):
     logger(f"{e}")
     return None
