@@ -188,7 +188,7 @@ def get_caller_dir():
     frame = inspect.stack()[1]
     abspath = os.path.abspath(frame.filename)
     return os.path.dirname(abspath)
-def call_for_all_tabs():
+def call_for_all_tabs(root=None):
     
-    root = get_caller_dir()
+    root = root or get_caller_dir()
     get_for_all_tabs(root)
