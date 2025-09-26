@@ -1,4 +1,5 @@
 from .imports import *
+from .module_imports import *
 @dataclass
 class ScanConfig:
     allowed_exts: Set[str]

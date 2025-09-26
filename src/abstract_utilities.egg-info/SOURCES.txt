@@ -43,6 +43,7 @@ src/abstract_utilities/path_utils/path_utils.py
 src/abstract_utilities/path_utils/imports/__init__.py
 src/abstract_utilities/path_utils/imports/constants.py
 src/abstract_utilities/path_utils/imports/imports.py
+src/abstract_utilities/path_utils/imports/module_imports.py
 src/abstract_utilities/robust_reader/__init__.py
 src/abstract_utilities/robust_reader/file_reader.py
 src/abstract_utilities/robust_reader/file_reader2.py
