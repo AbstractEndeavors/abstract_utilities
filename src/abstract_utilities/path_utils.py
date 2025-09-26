@@ -25,6 +25,13 @@ Version: 0.1.2
 import os
 import platform
 from .read_write_utils import read_from_file
+def get_caller_path(i=1):
+    frame = inspect.stack()[1]
+    return os.path.abspath(frame.filename)
+def get_caller_dir(i=1):
+    frame = inspect.stack()[1]
+    abspath = os.path.abspath(frame.filename)
+    return os.path.dirname(abspath)
 def get_os_info():
     """
     Get Operating System Information
