@@ -17,7 +17,6 @@ src/abstract_utilities/list_utils.py
 src/abstract_utilities/log_utils.py
 src/abstract_utilities/math_utils.py
 src/abstract_utilities/parse_utils.py
-src/abstract_utilities/path_utils.py
 src/abstract_utilities/read_write_utils.py
 src/abstract_utilities/string_clean.py
 src/abstract_utilities/tetsts.py
@@ -37,6 +36,13 @@ src/abstract_utilities/compare_utils/__init__.py
 src/abstract_utilities/compare_utils/best_match.py
 src/abstract_utilities/compare_utils/compare_utils.py
 src/abstract_utilities/compare_utils/find_value.py
+src/abstract_utilities/path_utils/__init__.py
+src/abstract_utilities/path_utils/file_filters.py
+src/abstract_utilities/path_utils/file_params.py
+src/abstract_utilities/path_utils/path_utils.py
+src/abstract_utilities/path_utils/imports/__init__.py
+src/abstract_utilities/path_utils/imports/constants.py
+src/abstract_utilities/path_utils/imports/imports.py
 src/abstract_utilities/robust_reader/__init__.py
 src/abstract_utilities/robust_reader/file_reader.py
 src/abstract_utilities/robust_reader/file_reader2.py
@@ -44,8 +50,7 @@ src/abstract_utilities/robust_reader/file_readers.py
 src/abstract_utilities/robust_reader/pdf_utils.py
 src/abstract_utilities/robust_reader/sadfsad.py
 src/abstract_utilities/robust_readers/__init__.py
-src/abstract_utilities/robust_readers/file_filters.py
-src/abstract_utilities/robust_readers/filter_params.py
+src/abstract_utilities/robust_readers/imports.py
 src/abstract_utilities/robust_readers/initFuncGen.py
 src/abstract_utilities/robust_readers/import_utils/__init__.py
 src/abstract_utilities/robust_readers/import_utils/dot_utils.py

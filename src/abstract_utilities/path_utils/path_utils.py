@@ -22,15 +22,12 @@ Author: putkoff
 Date: 05/31/2023
 Version: 0.1.2
 """
-import os
-import platform
-from .read_write_utils import read_from_file
+from .imports import *
 def get_caller_path(i=1):
-    frame = inspect.stack()[1]
+    frame = inspect.stack()[i]
     return os.path.abspath(frame.filename)
 def get_caller_dir(i=1):
-    frame = inspect.stack()[1]
-    abspath = os.path.abspath(frame.filename)
+    abspath = get_caller_path(i+1)
     return os.path.dirname(abspath)
 def get_os_info():
     """

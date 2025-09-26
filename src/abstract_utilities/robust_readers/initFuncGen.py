@@ -1,30 +1,11 @@
 # attach_functions.py  — single helper you can import anywhere
 # attach_dynamic.py
 from __future__ import annotations
-from types import ModuleType
-from typing import Iterable
-from .file_filters import define_defaults,get_files_and_dirs
+from .imports import *
+def call_for_all_tabs(root = None,tab_control=True):
+    root = root or get_caller_dir()
+    get_for_all_tabs(root,tab_control=tab_control)
 
-import inspect
-from ..read_write_utils import *
-import textwrap, pkgutil, os, re, textwrap, sys, types, importlib, importlib.util, inspect
-from typing import *
-ABSPATH = os.path.abspath(__file__)
-ABSROOT = os.path.dirname(ABSPATH)
-def get_caller_path():
-    frame = inspect.stack()[1]
-    return os.path.abspath(frame.filename)
-def get_caller_dir():
-    frame = inspect.stack()[1]
-    abspath = os.path.abspath(frame.filename)
-    return os.path.dirname(abspath)
-def call_for_all_tabs():
-
-    root = get_caller_dir()
-    get_for_all_tabs(root)
-
-ABSPATH = os.path.abspath(__file__)
-ABSROOT = os.path.dirname(ABSPATH)
 def clean_imports():
     alls = str(list(set("""os,re,subprocess,sys,re,traceback,pydot, enum, inspect, sys, traceback, threading,json,traceback,logging,requests""".replace('\n','').replace(' ','').replace('\t','').split(','))))[1:-1].replace('"','').replace("'",'')
     input(alls)
@@ -57,11 +38,17 @@ def ifFunctionsInFile(root):
             return item
         
 
-def get_for_all_tabs(root = None):
+def get_for_all_tabs(root = None,tab_control=True):
     root = root or caller_path()
     if os.path.isfile(root):
         root = os.path.dirname(root)
-    all_tabs = get_dirs(root = root)
+    if tab_control:
+        all_tabs = get_dirs(root = root)
+    else:
+        dirname = root
+        if root and os.path.isfile(root):
+            dirname = os.path.dirname(root)
+        all_tabs = [dirname]
     for ROOT in all_tabs:
         FUNCS_DIR = ifFunctionsInFile(ROOT)
         if FUNCS_DIR == None:
@@ -71,52 +58,38 @@ def get_for_all_tabs(root = None):
             apply_inits(ROOT)
             
 
-def apply_inits(ROOT):
-    FUNCS_DIR = ifFunctionsInFile(ROOT)
-
-    
-    if_fun_dir = isDir(FUNCS_DIR)
-    if if_fun_dir != None:
-        
-        if if_fun_dir:
-            CFG = define_defaults(allowed_exts='.py',
-                unallowed_exts = True,
-                exclude_types = True,
-                exclude_dirs = True,
-                exclude_patterns = True)
-            _,filepaths = get_files_and_dirs(FUNCS_DIR,cfg=CFG)
-            
-        else:
-            filepaths = [FUNCS_DIR]
-        
-        # Parse top-level def names
-        def extract_funcs(path: str):
-            funcs = []
-            for line in read_from_file(path).splitlines():
-                m = re.match(r"^def\s+([A-Za-z_]\w*)\s*\(self", line)
-                if m:
-                    funcs.append(m.group(1))
-            return funcs
-
-        # Build functions/__init__.py that re-exports all discovered functions
-        import_lines = []
-        all_funcs = []
-        for fp in filepaths:
-            module = os.path.splitext(os.path.basename(fp))[0]
-            funcs = extract_funcs(fp)
-            if funcs:
-                import_lines.append(f"from .{module} import ({', '.join(funcs)})")
-                all_funcs.extend(funcs)
-        if if_fun_dir:
-            functions_init = "\n".join(import_lines) + ("\n" if import_lines else "")
-            write_to_file(contents=functions_init, file_path=os.path.join(FUNCS_DIR, "__init__.py"))
-
-        # Prepare the tuple literal of function names for import + loop
-        uniq_funcs = sorted(set(all_funcs))
-        func_tuple = ", ".join(uniq_funcs) + ("," if len(uniq_funcs) == 1 else "")
-        
-        # Generate apiConsole/initFuncs.py using the safer setattr-loop
-        init_funcs_src = textwrap.dedent(f"""\
+def write_init_functions(import_lines,functions_dir):
+    functions_init = "\n".join(import_lines) + ("\n" if import_lines else "")
+    init_file_path = os.path.join(functions_dir, "__init__.py")
+    write_to_file(contents=functions_init, file_path=init_file_path)
+    return {"functions_init":functions_init,"init_file_path":init_file_path}
+def extract_funcs(filepaths):
+    funcs = []
+    for line in read_from_file(path).splitlines():
+        m = re.match(r"^def\s+([A-Za-z_]\w*)\s*\(self", line)
+        if m:
+            funcs.append(m.group(1))
+    return funcs
+def get_all_funcs(
+    filepaths,
+    all_funcs=None,
+    import_lines=None
+    ):
+    import_lines = import_lines or []
+    all_funcs = all_funcs or []
+    for fp in filepaths:
+        basename = os.path.basename(fp)
+        module = os.path.splitext(basename)[0]
+        funcs = extract_funcs(fp)
+        if funcs:
+            import_lines.append(f"from .{module} import ({', '.join(funcs)})")
+            all_funcs.extend(funcs)
+    uniq_funcs = sorted(set(all_funcs))
+    func_tuple=", ".join(uniq_funcs) + ("," if len(uniq_funcs) == 1 else "")
+    all_funcs_js = {"import_lines":import_lines,"all_funcs":all_funcs,"uniq_funcs":uniq_funcs,"func_tuple":func_tuple}
+    return all_funcs_js
+def get_init_funcs_str(func_tuple):
+        init_funcs_str = textwrap.dedent(f"""\
             
 
             from .functions import ({func_tuple})
@@ -129,7 +102,42 @@ def apply_inits(ROOT):
                     logger.info(f"{{e}}")
                 return self
         """)
-
-        write_to_file(contents=init_funcs_src, file_path=os.path.join(ROOT, "initFuncs.py"))
-
+        return init_funcs_str
+def get_function_file_paths(functions_dir):
+    filepaths=[]
+    if_fun_dir = isDir(functions_dir)
+    if if_fun_dir != None:
+        input(if_fun_dir)
+        if if_fun_dir:
+            CFG = define_defaults(allowed_exts='.py',
+                unallowed_exts = True,
+                exclude_types = True,
+                exclude_dirs = True,
+                exclude_patterns = True)
+            input(CFG)
+            _,filepaths = get_files_and_dirs(functions_dir,cfg=CFG)
+        else:
+            filepaths = [FUNCS_DIR]
+    input(filepaths)
+    return filepaths
+def apply_inits(root=None,tab_control=True):
+    root = root or get_caller_dir()
+    FUNCS_DIR = ifFunctionsInFile(root)
+    if_fun_dir = isDir(FUNCS_DIR)
+    if if_fun_dir != None:  
+        file_paths = get_function_file_paths(FUNCS_DIR)
+ 
+        all_funcs_js = get_all_funcs(
+            filepaths=file_paths
+            )
+        if if_fun_dir:
+            init_func_js = write_init_functions(import_lines=all_funcs_js.get('import_lines'),functions_dir=FUNCS_DIR)
+            all_funcs_js.update(init_func_js)
+        func_tuple = all_funcs_js.get("func_tuple")
+        init_funcs_str = get_init_funcs_str(func_tuple)
+        init_funcs_file_path = os.path.join(root, "initFuncs.py")
+        all_funcs_js["funcs_str"]=init_funcs_str
+        all_funcs_js["funcs_file_path"]=init_funcs_file_path
+        write_to_file(contents=init_funcs_str, file_path=init_funcs_file_path)
+        return all_funcs_js
 

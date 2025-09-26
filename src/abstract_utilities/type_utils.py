@@ -59,7 +59,6 @@ Version: 0.1.2
 import os
 from pathlib import Path
 from typing import Union
-from .path_utils import get_all_item_paths,get_files
 from .list_utils import make_list
 # A big, but by no means exhaustive, map of extensions to mime‐types by category:
 MIME_TYPES = {
