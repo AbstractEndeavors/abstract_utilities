@@ -68,4 +68,6 @@ def prune_inputs(func, *args, **kwargs):
     new_kwargs = {k: v for k, v in new_kwargs.items() if k in accepted_names}
 
     return tuple(new_args), new_kwargs
-
+def run_pruned_func(func, *args, **kwargs):
+   args,kwargs = prune_inputs(func, *args, **kwargs)
+   return func(*args, **kwargs)
