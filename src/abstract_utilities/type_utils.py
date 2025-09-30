@@ -60,7 +60,6 @@ import os
 from pathlib import Path
 from typing import Union
 from .list_utils import make_list
-from .path_utils im
 # A big, but by no means exhaustive, map of extensions to mime‐types by category:
 MIME_TYPES = {
     'image': {
