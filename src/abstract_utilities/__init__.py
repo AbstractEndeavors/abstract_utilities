@@ -74,7 +74,10 @@ from .path_utils import (get_file_create_time,
                          make_dirs,
                          remove_directory,
                          remove_path,
-                         get_file_parts
+                         get_file_parts,
+                         get_file_map,
+                         get_file_type,
+                         MIME_TYPES
                          )
 from .list_utils import (get_highest_value_obj,
                          make_list,

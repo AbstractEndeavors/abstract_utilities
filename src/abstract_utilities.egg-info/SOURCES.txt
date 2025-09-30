@@ -39,6 +39,7 @@ src/abstract_utilities/compare_utils/find_value.py
 src/abstract_utilities/path_utils/__init__.py
 src/abstract_utilities/path_utils/file_filters.py
 src/abstract_utilities/path_utils/file_params.py
+src/abstract_utilities/path_utils/file_utils.py
 src/abstract_utilities/path_utils/path_utils.py
 src/abstract_utilities/path_utils/imports/__init__.py
 src/abstract_utilities/path_utils/imports/constants.py
