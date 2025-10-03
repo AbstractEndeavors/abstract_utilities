@@ -77,7 +77,8 @@ from .path_utils import (get_file_create_time,
                          get_file_parts,
                          get_file_map,
                          get_file_type,
-                         MIME_TYPES
+                         call_for_all_tabs
+                         
                          )
 from .list_utils import (get_highest_value_obj,
                          make_list,
@@ -123,7 +124,8 @@ from .type_utils import (make_bool,
                          get_numbers,
                          get_numbers_comp,
                          is_any_instance,
-                         break_string
+                         break_string,
+                         MIME_TYPES
                          )
 get_media_types = get_all_types = get_all_file_types
 from .math_utils import (convert_to_percentage,
@@ -153,5 +155,5 @@ from .log_utils import get_caller_info,get_logFile,print_or_log,get_json_call_re
 from .error_utils import try_func
 from .class_utils import alias,get_class_inputs,get_set_attr
 from .robust_reader import *
-from .robust_readers import *
+
 
