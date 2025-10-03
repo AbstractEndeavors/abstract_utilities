@@ -1,14 +1,10 @@
 # attach_functions.py  — single helper you can import anywhere
 # attach_dynamic.py
 from __future__ import annotations
-from types import ModuleType
-from typing import Iterable
-from .file_filters import define_defaults,get_files_and_dirs
-  
 
-from abstract_utilities import *
-import textwrap, pkgutil, os, re, textwrap, sys, types, importlib, importlib.util, inspect
-from typing import *
+from .file_filters import define_defaults,get_files_and_dirs
+from .imports import *
+
 ABSPATH = os.path.abspath(__file__)
 ABSROOT = os.path.dirname(ABSPATH)
 def caller_path():
