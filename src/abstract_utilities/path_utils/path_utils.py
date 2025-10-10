@@ -576,11 +576,46 @@ def remove_path(path=None):
             remove_directory(path)
         else:
             os.remove(path)
+def get_safe_dirname(path=None):
+    if path:
+        path_str = str(path)
+        return os.path.dirname(path_str)
+def get_safe_basename(path=None):
+    if path:
+        path_str = str(path)
+        return os.path.basename(path_str)
+def get_safe_splitext(path=None,basename=None):
+    basename = basename or get_safe_basename(path=path)
+    if basename:
+        basename_str = str(basename)
+        filename,ext = os.path.splitext(basename_str)
+        return filename,ext
+def get_safe_filename(path=None,basename=None):
+    filename,_ = get_safe_splitext(path=path,basename=basename)
+    return filename
+def get_safe_ext(path=None,basename=None):
+    _,ext = get_safe_splitext(path=path,basename=basename)
+    return ext
+
 def get_file_parts(path):
-    dirname = os.path.dirname(path)
-    dirbase = os.path.basename(dirname)
-    parent_dirname = os.path.dirname(dirname)
-    parent_dirbase = os.path.basename(parent_dirname)
-    basename = os.path.basename(path)
-    filename, ext = os.path.splitext(baseName)
-    return {"dirname": dirName, "basename": baseName, "filename": fileName, "ext": ext,"dirbase":dirbase,"parent_dirname":parent_dirname,"parent_dirbase":parent_dirbase}
+    dirname = get_safe_dirname(path)
+    basename = get_safe_basename(path)
+    filename, ext = get_safe_splitext(basename=basename)
+    dirbase = get_safe_basename(dirname)
+    
+    parent_dirname = get_safe_dirname(dirname)
+    parent_dirbase = get_safe_basename(parent_dirname)
+    
+    super_dirname = get_safe_dirname(parent_dirname)
+    super_dirbase = get_safe_basename(parent_dirname)
+
+    return {"dirname": dirname,
+            "basename": basename,
+            "filename": filename,
+            "ext": ext,
+            "dirbase":dirbase,
+            "parent_dirname":parent_dirname,
+            "parent_dirbase":parent_dirbase,
+            "super_dirname":super_dirname,
+            "super_dirbase":super_dirbase
+            }
