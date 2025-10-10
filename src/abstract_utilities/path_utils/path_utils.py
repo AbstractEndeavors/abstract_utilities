@@ -577,7 +577,10 @@ def remove_path(path=None):
         else:
             os.remove(path)
 def get_file_parts(path):
-    dirName = os.path.dirname(path)
-    baseName = os.path.basename(path)
-    fileName, ext = os.path.splitext(baseName)
-    return {"dirName": dirName, "baseName": baseName, "fileName": fileName, "ext": ext}
+    dirname = os.path.dirname(path)
+    dirbase = os.path.basename(dirname)
+    parent_dirname = os.path.dirname(dirname)
+    parent_dirbase = os.path.basename(parent_dirname)
+    basename = os.path.basename(path)
+    filename, ext = os.path.splitext(baseName)
+    return {"dirname": dirName, "basename": baseName, "filename": fileName, "ext": ext,"dirbase":dirbase,"parent_dirname":parent_dirname,"parent_dirbase":parent_dirbase}
