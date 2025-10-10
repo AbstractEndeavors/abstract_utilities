@@ -598,16 +598,18 @@ def get_safe_ext(path=None,basename=None):
     return ext
 
 def get_file_parts(path):
-    dirname = get_safe_dirname(path)
+    
     basename = get_safe_basename(path)
     filename, ext = get_safe_splitext(basename=basename)
+
+    dirname = get_safe_dirname(path)
     dirbase = get_safe_basename(dirname)
     
     parent_dirname = get_safe_dirname(dirname)
     parent_dirbase = get_safe_basename(parent_dirname)
     
     super_dirname = get_safe_dirname(parent_dirname)
-    super_dirbase = get_safe_basename(parent_dirname)
+    super_dirbase = get_safe_basename(super_dirname)
 
     return {"dirname": dirname,
             "basename": basename,
