@@ -343,7 +343,7 @@ def normalize_items(
 ) -> List[tuple[PathBackend, str, dict]]:
     pairs: List[tuple[PathBackend, str, dict]] = []
     host = user_at_host or kwargs.get("host") or kwargs.get("user")
-
+    paths = make_list(paths)
     for item in paths:
         if not item:
             continue
