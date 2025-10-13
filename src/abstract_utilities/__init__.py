@@ -79,7 +79,8 @@ from .path_utils import (get_file_create_time,
                          get_file_type,
                          call_for_all_tabs,
                          get_files_and_dirs,
-                         define_defaults
+                         define_defaults,
+                         ScanConfig
                          )
 from .list_utils import (get_highest_value_obj,
                          make_list,
