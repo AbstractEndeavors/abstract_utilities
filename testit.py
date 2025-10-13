@@ -1,14 +1,10 @@
-from src.abstract_utilities import *
+from src.abstract_utilities.file_utils.file_utils.file_utils import *
 directory = "/var/www/api/abstract_logins/abstract_login/src/abstract_logins/app/imports/src/auth_utils/user_store/admin_utils/create_user.py"
-froms = extract_froms(directory)
-imports = extract_imports(directory)
-funcs = extract_funcs(directory)
-classes = extract_class(directory)
+
 ##out = get_files_and_dirs("/home/solcatcher",add=True) # returns text
-files = get_globs('/path')
-input(files)
-files = get_files_and_dirs('/var/www/TDD/thedailydialectics/public',user_at_host='solcatcher')
-input(files)
+
+dirs,files = get_files_and_dirs(directory='/path',user_at_host='solcatcher')
+input(dirs)
 print(out)
 # capture locally
 out = get_files_and_dirs("/etc/nginx/sites-available",add=True) # returns text

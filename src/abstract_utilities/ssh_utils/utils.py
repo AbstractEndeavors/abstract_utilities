@@ -1,4 +1,30 @@
 from .imports import *
+def get_pass_from_key(key=None,env_path=None):
+    if key:
+        return get_env_value(key=key,path=env_path)
+def get_password(password=None,key=None,env_path=None):
+    password = password or get_pass_from_key(key=key,env_path=env_path)
+    return password
+
+def get_print_sudo_cmd(
+        cmd: str,
+        password=None,
+        key=None,
+        env_path=None
+    ):
+    password = get_password(password=password,key=key,env_path=env_path)
+    if password != None:
+        
+        cmd = get_password_cmd(password=password,cmd=cmd)
+    return cmd
+def get_password_cmd(password:str,cmd:str):
+    sudo_cmd = get_sudo_cmd(cmd)
+    password_sudo_cmd = get_raw_password_sudo_cmd(password=password,sudo_cmd=sudo_cmd)
+    return password_sudo_cmd
+def get_sudo_cmd(cmd: str):
+    return f"sudo -S -k {cmd}"
+def get_raw_password_sudo_cmd(password:str,sudo_cmd:str):
+    return f"printf %s {shlex.quote(password)} | {sudo_cmd}"
 def get_remote_bash(
             cmd: str,
             cwd: str | None = None
@@ -9,13 +35,21 @@ def get_remote_ssh(
             remote:str=None
         ):
     return f"ssh {shlex.quote(user_at_host)} {shlex.quote(remote)}"
-                   
 def get_remote_cmd(
             cmd: str,
             user_at_host: str,
             cwd: str | None = None,
+            password=None,
+            key=None,
+            env_path=None
             
         ):
+    cmd = get_print_sudo_cmd(
+            cmd=cmd,
+            password=password,
+            key=key,
+            env_path=env_path
+        )
     remote = get_remote_bash(
         cmd=cmd,
         cwd=cwd
@@ -25,6 +59,8 @@ def get_remote_cmd(
         remote=remote
         )
     return full
+
+
 def execute_cmd(
         *args,
         outfile=None,
@@ -46,8 +82,18 @@ def run_local_cmd(
         outfile: Optional[str] = None,
         shell=True,
         text=True,
-        capture_output=True
+        capture_output=True,
+        user_at_host: str=None,
+        password=None,
+        key=None,
+        env_path=None
     ) -> str:
+    cmd = get_print_sudo_cmd(
+            cmd=cmd,
+            password=password,
+            key=key,
+            env_path=env_path
+        )
     return execute_cmd(
             cmd,
             outfile=outfile,
@@ -64,12 +110,21 @@ def run_remote_cmd(
         outfile: Optional[str] = None,
         shell=True,
         text=True,
-        capture_output=True
+        capture_output=True,
+        password=None,
+        key=None,
+        env_path=None
     ) -> str:
     """
     Run on remote via SSH; capture stdout+stderr locally; write to local outfile.
     NOTE: we do *not* try to write the file on the remote to avoid later scp.
     """
+    cmd = get_print_sudo_cmd(
+            cmd=cmd,
+            password=password,
+            key=key,
+            env_path=env_path
+        )
     # wrap in bash -lc for PATH/profile + allow 'cd && ...'
     cmd = get_remote_cmd(
         cmd=cmd,
@@ -83,6 +138,7 @@ def run_remote_cmd(
             text=text,
             capture_output=capture_output
         )
+
 def run_cmd(
         cmd: str=None,
         cwd: str | None = None,
@@ -90,8 +146,12 @@ def run_cmd(
         shell=True,
         text=True,
         capture_output=True,
-        user_at_host: str=None
+        user_at_host: str=None,
+        password=None,
+        key=None,
+        env_path=None
     ) -> str:
+
     if user_at_host:
         return run_ssh_cmd(
                 user_at_host=user_at_host,
@@ -100,7 +160,10 @@ def run_cmd(
                 outfile=outfile,
                 shell=shell,
                 text=text,
-                capture_output=capture_output
+                capture_output=capture_output,
+                password=password,
+                key=key,
+                env_path=env_path
             )
     return run_local_cmd(
             cmd=cmd,
@@ -108,7 +171,10 @@ def run_cmd(
             outfile=outfile,
             shell=shell,
             text=text,
-            capture_output=capture_output
+            capture_output=capture_output,
+            password=password,
+            key=key,
+            env_path=env_path
         )
 run_ssh_cmd = run_remote_cmd
 remote_cmd = run_remote_cmd
