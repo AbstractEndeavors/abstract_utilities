@@ -8,7 +8,7 @@ out = get_files_and_dirs("/home/solcatcher",add=True) # returns text
 
 print(out)
 # capture locally
-out = get_files_and_dirs("/home/solcatcher", user_at_host="solcatcher",add=True) # returns text
+out = get_files_and_dirs("/etc/nginx/sites-available",add=True) # returns text
 print(out)
 # capture on remote
 out = cmd_run("ls -la /", user_at_host="solcatcher@23.126.105.154")
