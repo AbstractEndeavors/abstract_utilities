@@ -59,6 +59,7 @@ src/abstract_utilities/file_utils/file_utils/pdf_utils.py
 src/abstract_utilities/file_utils/imports/__init__.py
 src/abstract_utilities/file_utils/imports/classes.py
 src/abstract_utilities/file_utils/imports/constants.py
+src/abstract_utilities/file_utils/imports/file_functions.py
 src/abstract_utilities/file_utils/imports/imports.py
 src/abstract_utilities/file_utils/imports/module_imports.py
 src/abstract_utilities/robust_reader/__init__.py
