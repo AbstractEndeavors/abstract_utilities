@@ -74,14 +74,17 @@ from .path_utils import (get_file_create_time,
                          make_dirs,
                          remove_directory,
                          remove_path,
-                         get_file_parts,
-                         get_file_map,
-                         get_file_type,
-                         call_for_all_tabs,
-                         get_files_and_dirs,
-                         define_defaults,
-                         ScanConfig
+
                          )
+from .file_utils import (
+    get_file_parts,
+    get_file_map,
+    get_file_type,
+    call_for_all_tabs,
+    get_files_and_dirs,
+    define_defaults,
+    ScanConfig
+    )
 from .list_utils import (get_highest_value_obj,
                          make_list,
                          safe_list_return,
@@ -157,5 +160,5 @@ from .log_utils import get_caller_info,get_logFile,print_or_log,get_json_call_re
 from .error_utils import try_func
 from .class_utils import alias,get_class_inputs,get_set_attr
 from .robust_reader import *
-
-
+from .robust_readers import *
+from .ssh_utils import *

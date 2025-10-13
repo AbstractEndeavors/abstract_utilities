@@ -1,4 +1,4 @@
-from ..string_clean import eatOuter
+
 def get_user_input(text,default='y'):
     choices = '(y/n)' if default in ['y','n'] else ''
     response = input(f"{text} {choices}:({default}) ") or default

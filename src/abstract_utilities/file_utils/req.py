@@ -1,10 +1,8 @@
 # attach_functions.py  — single helper you can import anywhere
 # attach_dynamic.py
 from __future__ import annotations
-
-from .file_filters import define_defaults,get_files_and_dirs
+from .file_utils import define_defaults,get_files_and_dirs
 from .imports import *
-
 ABSPATH = os.path.abspath(__file__)
 ABSROOT = os.path.dirname(ABSPATH)
 def caller_path():
@@ -217,8 +215,7 @@ def attach_functions(
     return attached
 
 
-ABSPATH = os.path.abspath(__file__)
-ABSROOT = os.path.dirname(ABSPATH)
+
 def clean_imports():
     alls = str(list(set("""os,re,subprocess,sys,re,traceback,pydot, enum, inspect, sys, traceback, threading,json,traceback,logging,requests""".replace('\n','').replace(' ','').replace('\t','').split(','))))[1:-1].replace('"','').replace("'",'')
     input(alls)
