@@ -321,32 +321,7 @@ class SSHFS:
         return [line.strip() for line in (out or "").splitlines() if line.strip()]
 
 
-def make_allowed_predicate(cfg: ScanConfig,fs=None) -> Callable[[str], bool]:
-    fs = fs or LocalFS()
-    def allowed(path: str) -> bool:
-        
-        name = p.name.lower()
-        path_str = str(p).lower()
-        # A) directories
-        if cfg.exclude_dirs:
-            for dpat in cfg.exclude_dirs:
-                if dpat in path_str or fnmatch.fnmatch(name, dpat.lower()):
-                    if p.is_dir() or dpat in path_str:
-                        return False
 
-        if cfg.exclude_patterns:
-            # B) filename patterns
-            for pat in cfg.exclude_patterns:
-                if fnmatch.fnmatch(name, pat.lower()):
-                    return False
-
-        # C) extension gates
-        if p.is_file():
-            ext = p.suffix.lower()
-            if (cfg.allowed_exts and ext not in cfg.allowed_exts) or (cfg.unallowed_exts and ext in cfg.unallowed_exts):
-                return False
-        return True
-    return allowed
 def try_group(pre,item,strings):
     
     try:
