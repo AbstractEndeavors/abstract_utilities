@@ -5,6 +5,7 @@ from typing import *
 from .hash_utils import *
 ##from .dynimport import get_abstract_import,import_symbols_to_parent,call_for_all_tabs
 from .robust_readers import *
+from .dynimport import get_abstract_import
 from .json_utils import (unified_json_loader,
                          find_keys,
                          get_key_values_from_path,
