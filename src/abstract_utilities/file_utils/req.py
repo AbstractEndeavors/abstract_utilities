@@ -324,15 +324,6 @@ def apply_inits(ROOT):
 
         write_to_file(contents=init_funcs_src, file_path=os.path.join(ROOT, "initFuncs.py"))
 
-def get_caller_path():
-    i = i or 1
-    frame = inspect.stack()[i]
-    return os.path.abspath(frame.filename)
-def get_caller_dir(i=None):
-    i = i or 1
-    frame = inspect.stack()[i]
-    abspath = os.path.abspath(frame.filename)
-    return os.path.dirname(abspath)
 def call_for_all_tabs():
     root = get_caller_dir(2)
     get_for_all_tabs(root)
