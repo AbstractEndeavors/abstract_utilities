@@ -160,7 +160,6 @@ def get_files_and_dirs(
     allowed = make_allowed_predicate(cfg)
     items = []
     files = []
-    input(allowed)
     if recursive:
         items = get_globs(directory, recursive=recursive, allowed=allowed, **kwargs)
     else:
