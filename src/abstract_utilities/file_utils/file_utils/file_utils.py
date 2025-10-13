@@ -1,137 +1,58 @@
-from .imports import *
-# -------- Public API drop-ins that mirror your originals --------
+from pathlib import Path
+from typing import *
+import fnmatch, os, glob
 from .filter_params import *
-from .file_filters import *
-# -------------------------------------------------------------
-# Wrapper: respects your original API and naming conventions
-# -------------------------------------------------------------
-
+##from abstract_utilities import make_list,get_media_exts, is_media_type
 def get_allowed_predicate(allowed=None):
-    if allowed is not False:
-        if allowed is True:
+    if allowed != False:
+        if allowed == True:
             allowed = None
         allowed = allowed or make_allowed_predicate()
     else:
         def allowed(*args):
             return True
+        allowed = allowed
     return allowed
-
-
-# -------------------------------------------------------------
-# Remote-aware globbing
-# -------------------------------------------------------------
-def get_globs(items, recursive: bool = True, allowed=None, **kwargs):
-    """
-    Behaves like your original get_globs(), but can traverse both
-    local and remote paths transparently via normalize_items().
-    """
+def get_globs(items,recursive: bool = True,allowed=None):
     glob_paths = []
-    roots = [p for p in make_list(items) if p]
-
-    kwargs.setdefault("mindepth", 0)
-    if not recursive:
-        kwargs.setdefault("maxdepth", 1)
-    
-    for fs, root, _ in normalize_items(roots, **kwargs):
-        # use the backend's recursive walker
-        nu_items = fs.glob_recursive(root, **kwargs)
+    items = [item for item in make_list(items) if item]
+    for item in items:
+        pattern = os.path.join(item, "**/*")  # include all files recursively\n
+        nuItems = glob.glob(pattern, recursive=recursive)
         if allowed:
-           
-            nu_items = [n for n in nu_items if n and allowed(n)]
-            
-        glob_paths += nu_items
+            nuItems = [nuItem for nuItem in nuItems if nuItem and allowed(nuItem)]
+        glob_paths += nuItems
     return glob_paths
-
-
-# -------------------------------------------------------------
-# Allowed filters
-# -------------------------------------------------------------
-def get_allowed_files(items, allowed=True, **kwargs):
+def get_allowed_files(items,allowed=True):
     allowed = get_allowed_predicate(allowed=allowed)
-    out = []
-    for fs, item, _ in normalize_items(items, **kwargs):
-        if fs.isfile(item) and allowed(item):
-            out.append(item)
-    return out
-
-
-def get_allowed_dirs(items, allowed=False, **kwargs):
+    return [item for item in items if item and os.path.isfile(item) and allowed(item)]
+def get_allowed_dirs(items,allowed=False):
     allowed = get_allowed_predicate(allowed=allowed)
-    out = []
-    for fs, item, _ in normalize_items(items, **kwargs):
-        if fs.isdir(item) and allowed(item):
-            out.append(item)
-    return out
+    return [item for item in items if item and os.path.isdir(item) and allowed(item)]
 
-
-# -------------------------------------------------------------
-# Filtered sets
-# -------------------------------------------------------------
-def get_filtered_files(items, allowed=None, files=None, **kwargs):
+def get_filtered_files(items,allowed=None,files = []):
     allowed = get_allowed_predicate(allowed=allowed)
-    files = set(files or [])
-    out = []
-    for fs, root, _ in normalize_items(items, **kwargs):
-        for p in fs.glob_recursive(root, **kwargs):
-            if p in files:
-                continue
-            if allowed(p) and fs.isfile(p):
-                out.append(p)
-    return out
-
-
-def get_filtered_dirs(items, allowed=None, dirs=None, **kwargs):
+    glob_paths = get_globs(items)
+    return [glob_path for glob_path in glob_paths if glob_path and os.path.isfile(glob_path) and glob_path not in files and allowed(glob_path)]
+def get_filtered_dirs(items,allowed=None,dirs = []):
     allowed = get_allowed_predicate(allowed=allowed)
-    dirs = set(dirs or [])
-    out = []
-    for fs, root, _ in normalize_items(items, **kwargs):
-        for p in fs.glob_recursive(root, **kwargs):
-            if p in dirs:
-                continue
-            if allowed(p) and fs.isdir(p):
-                out.append(p)
-    return out
+    glob_paths = get_globs(items)
+    return [glob_path for glob_path in glob_paths if glob_path and os.path.isdir(glob_path) and glob_path not in dirs and allowed(glob_path)]
 
-
-# -------------------------------------------------------------
-# Recursive expansion
-# -------------------------------------------------------------
-def get_all_allowed_files(items, allowed=None, **kwargs):
-    dirs = get_all_allowed_dirs(items, allowed=allowed, **kwargs)
-    files = get_allowed_files(items, allowed=allowed, **kwargs)
-    seen = set(files)
-    for fs, directory, _ in normalize_items(dirs, **kwargs):
-        for p in fs.glob_recursive(directory, **kwargs):
-            if p in seen:
-                continue
-            if allowed and not allowed(p):
-                continue
-            if fs.isfile(p):
-                files.append(p)
-                seen.add(p)
+def get_all_allowed_files(items,allowed=None):
+    dirs = get_all_allowed_dirs(items)
+    files = get_allowed_files(items)
+    nu_files = []
+    for directory in dirs:
+        files += get_filtered_files(directory,allowed=allowed,files=files)
     return files
-
-
-def get_all_allowed_dirs(items, allowed=None, **kwargs):
+def get_all_allowed_dirs(items,allowed=None):
     allowed = get_allowed_predicate(allowed=allowed)
-    out = []
-    seen = set()
-    for fs, root, _ in normalize_items(items, **kwargs):
-        if fs.isdir(root) and allowed(root):
-            out.append(root)
-            seen.add(root)
-        for p in fs.glob_recursive(root, **kwargs):
-            if p in seen:
-                continue
-            if allowed(p) and fs.isdir(p):
-                out.append(p)
-                seen.add(p)
-    return out
-
-
-# -------------------------------------------------------------
-# Unified directory scan
-# -------------------------------------------------------------
+    dirs = get_allowed_dirs(items)
+    nu_dirs=[]
+    for directory in dirs:
+        nu_dirs += get_filtered_dirs(directory,allowed=allowed,dirs=nu_dirs)
+    return nu_dirs
 def get_files_and_dirs(
     directory: str,
     cfg: Optional["ScanConfig"] = None,
@@ -140,15 +61,11 @@ def get_files_and_dirs(
     exclude_types: Optional[Set[str]] = False,
     exclude_dirs: Optional[List[str]] = False,
     exclude_patterns: Optional[List[str]] = False,
-    add=False,
+    add = False,
     recursive: bool = True,
     include_files: bool = True,
     **kwargs
-):
-    """
-    Same public signature as your original get_files_and_dirs(),
-    but powered by backend objects (LocalFS or SSHFS).
-    """
+    ):
     cfg = cfg or define_defaults(
         allowed_exts=allowed_exts,
         unallowed_exts=unallowed_exts,
@@ -156,43 +73,34 @@ def get_files_and_dirs(
         exclude_dirs=exclude_dirs,
         exclude_patterns=exclude_patterns,
         add=add
-    )
+        )
     allowed = make_allowed_predicate(cfg)
-    items = []
-    files = []
+    items=[]
+    files =[]
     if recursive:
-        items = get_globs(directory, recursive=recursive, allowed=allowed, **kwargs)
+        items = get_globs(directory,recursive=recursive,allowed=allowed)
     else:
-        for fs, base, _ in normalize_items(make_list(directory), **kwargs):
-            try:
-                items += [fs.join(base, name) for name in fs.listdir(base)]
-            except Exception:
-                pass
-
-    dirs = get_allowed_dirs(items, allowed=allowed, **kwargs)
+        directories = make_list(directory)
+        for directory in directories:
+            items +=[os.path.join(directory,item) for item in os.listdir(directory)]
+    dirs = get_allowed_dirs(items,allowed=allowed)
     if include_files:
-        files = get_allowed_files(items, allowed=allowed, **kwargs)
-    return dirs, files
-
-
-# -------------------------------------------------------------
-# Unchanged predicate builder
-# -------------------------------------------------------------
+        files = get_allowed_files(items,allowed=allowed)
+    return dirs,files
 def make_allowed_predicate(cfg: ScanConfig) -> Callable[[str], bool]:
     def allowed(path: str) -> bool:
         p = Path(path)
         name = p.name.lower()
         path_str = str(p).lower()
-
-        # A) directory exclusions
+        # A) directories
         if cfg.exclude_dirs:
             for dpat in cfg.exclude_dirs:
                 if dpat in path_str or fnmatch.fnmatch(name, dpat.lower()):
                     if p.is_dir() or dpat in path_str:
                         return False
 
-        # B) filename pattern exclusions
         if cfg.exclude_patterns:
+            # B) filename patterns
             for pat in cfg.exclude_patterns:
                 if fnmatch.fnmatch(name, pat.lower()):
                     return False
@@ -200,8 +108,106 @@ def make_allowed_predicate(cfg: ScanConfig) -> Callable[[str], bool]:
         # C) extension gates
         if p.is_file():
             ext = p.suffix.lower()
-            if (cfg.allowed_exts and ext not in cfg.allowed_exts) or \
-               (cfg.unallowed_exts and ext in cfg.unallowed_exts):
+            if (cfg.allowed_exts and ext not in cfg.allowed_exts) or (cfg.unallowed_exts and ext in cfg.unallowed_exts):
                 return False
         return True
     return allowed
+def collect_filepaths(
+    directory: List[str],
+    cfg: ScanConfig=None,
+    allowed_exts: Optional[Set[str]] = False,
+    unallowed_exts: Optional[Set[str]] = False,
+    exclude_types: Optional[Set[str]] = False,
+    exclude_dirs: Optional[List[str]] = False,
+    exclude_patterns: Optional[List[str]] = False,
+    add=False,
+    allowed: Optional[Callable[[str], bool]] = None,
+    **kwargs
+    ) -> List[str]:
+    cfg = cfg or define_defaults(
+                                allowed_exts=allowed_exts,
+                                unallowed_exts=unallowed_exts,
+                                exclude_types=exclude_types,
+                                exclude_dirs=exclude_dirs,
+                                exclude_patterns=exclude_patterns,
+                                add = add
+                                )
+    allowed = allowed or make_allowed_predicate(cfg)
+    directories = make_list(directory)
+    roots = [r for r in directories if r]
+
+    # your existing helpers (get_dirs, get_globs, etc.) stay the same
+    original_dirs = get_allowed_dirs(roots, allowed=allowed)
+    original_globs = get_globs(original_dirs)
+    files = get_allowed_files(original_globs, allowed=allowed)
+
+    for d in get_filtered_dirs(original_dirs, allowed=allowed):
+        files += get_filtered_files(d, allowed=allowed, files=files)
+
+    # de-dupe while preserving order
+    seen, out = set(), []
+    for f in files:
+        if f not in seen:
+            seen.add(f)
+            out.append(f)
+    return out
+
+
+def _fast_walk(
+    root: Path,
+    exts: Iterable[str],
+    skip_dirs: Iterable[str] = (),
+    skip_patterns: Iterable[str] = (),
+) -> List[Path]:
+    exts = tuple(exts)
+    skip_dirs = set(sd.lower() for sd in skip_dirs or ())
+    skip_patterns = tuple(sp.lower() for sp in (skip_patterns or ()))
+
+    out = []
+    for p in root.rglob("*"):
+        # skip directories by name hit
+        if p.is_dir():
+            name = p.name.lower()
+            if name in skip_dirs:
+                # rglob doesn't let us prune mid-iteration cleanly; we just won't collect under it
+                continue
+            # nothing to collect for dirs
+            continue
+
+        # file filters
+        name = p.name.lower()
+        if any(fnmatch.fnmatch(name, pat) for pat in skip_patterns):
+            continue
+        if p.suffix.lower() in exts:
+            out.append(p)
+
+    # de-dup and normalize
+    return sorted({pp.resolve() for pp in out})
+
+
+def enumerate_source_files(
+    src_root: Path,
+    cfg: Optional["ScanConfig"] = None,
+    *,
+    exts: Optional[Iterable[str]] = None,
+    fast_skip_dirs: Optional[Iterable[str]] = None,
+    fast_skip_patterns: Optional[Iterable[str]] = None,
+) -> List[Path]:
+    """
+    Unified enumerator:
+      - If `cfg` is provided: use collect_filepaths(...) with full rules.
+      - Else: fast walk using rglob over `exts` (defaults to EXTS) with optional light excludes.
+    """
+    src_root = Path(src_root)
+
+    if cfg is not None:
+        files = collect_filepaths([str(src_root)], cfg=cfg)
+        return sorted({Path(f).resolve() for f in files})
+
+    # Fast mode
+    return _fast_walk(
+        src_root,
+        exts or EXTS,
+        skip_dirs=fast_skip_dirs or (),
+        skip_patterns=fast_skip_patterns or (),
+    )
