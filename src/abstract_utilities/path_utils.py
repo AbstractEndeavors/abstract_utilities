@@ -22,6 +22,7 @@ Author: putkoff
 Date: 05/31/2023
 Version: 0.1.2
 """
+import os
 from .read_write_utils import read_from_file,write_to_file
 from .string_clean import eatAll
 from .list_utils import make_list
