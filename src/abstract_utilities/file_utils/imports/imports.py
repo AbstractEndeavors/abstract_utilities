@@ -1,11 +1,13 @@
-from pathlib import Path
+import pandas as pd
 from typing import *
-from dataclasses import dataclass, field
-import fnmatch, fnmatch,shlex, os, glob, platform, textwrap, pkgutil, re, textwrap, sys, types, importlib, importlib.util, inspect
+import geopandas as gpd
+from pathlib import Path
 from types import ModuleType
-# Accept strings like:
-#   "/local/abs/dir"
-#   "relative/local/dir"
-#   "user@host:/abs/dir"
-REMOTE_RE = re.compile(r"^(?P<host>[^:\s]+@[^:\s]+):(?P<path>/.*)$")
-AllowedPredicate = Optional[Callable[[str], bool]]
+from datetime import datetime
+from pdf2image import convert_from_path
+from dataclasses import dataclass, field
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
+import fnmatch, fnmatch,shlex, os, glob, platform, textwrap, pkgutil
+import tempfile,shutil,logging,ezodf,fnmatch,pytesseract,pdfplumber,re
+import textwrap, sys, types, importlib, importlib.util, inspect,PyPDF2

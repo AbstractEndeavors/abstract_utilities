@@ -312,4 +312,4 @@ def pexpect_cmd_with_args(
             print_cmd(command, out)
 
     return child.exitstatus if child.exitstatus is not None else 0
-
+cmd_input = execute_cmd_input

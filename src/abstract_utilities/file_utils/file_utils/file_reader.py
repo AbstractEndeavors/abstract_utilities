@@ -1,29 +1,15 @@
 # file_reader.py
-import os,tempfile,shutil,logging,ezodf,fnmatch
-from typing import Union
-import pandas as pd
-import geopandas as gpd
-from abstract_utilities import * 
-from datetime import datetime
-from werkzeug.utils import secure_filename
-from werkzeug.datastructures import FileStorage
-from datetime import datetime
-from typing import Dict, Union, List
+from .imports import *
+# -------- Public API drop-ins that mirror your originals --------
+from .filter_params import *
+from .file_filters import *
+from .file_utils import *
 from .pdf_utils import *
-import pdfplumber
-from pdf2image import convert_from_path   # only used for OCR fallback
-import pytesseract
-from pathlib import Path
 # ---------------------------------------------------------------------------
 # NOTE: The following helper functions must be provided elsewhere:
 #   - convert_date_string(s: str) -> datetime
 #   - read_from_file(path: str) -> pd.DataFrame
 # ---------------------------------------------------------------------------
-DEFAULT_EXCLUDE_DIRS = {"node_modules", "__pycache__","backups","backup"}
-DEFAULT_EXCLUDE_FILE_PATTERNS = {"__init__*", "*.tmp", "*.log"}
-DEFAULT_EXCLUDE_TYPES = {"image","video","audio","presentation"}
-def get_ext(item):
-    return item.split('.')[-1]
 def _should_skip_dir(dir_name: str, exclude_dirs: set[str]) -> bool:
     """
     Return True if dir_name match=self.exclude_types)es one of the excluded directory names exactly.

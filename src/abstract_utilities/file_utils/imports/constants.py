@@ -28,9 +28,11 @@ _unallowed = set(get_media_exts(DEFAULT_EXCLUDE_TYPES)) | {'.bak', '.shp', '.cpg
 DEFAULT_UNALLOWED_EXTS = {e for e in _unallowed if e not in DEFAULT_ALLOWED_EXTS}
 
 DEFAULT_EXCLUDE_DIRS: Set[str] = {
-    "node_modules", "__pycache__", "backups", "backup", "backs", "trash", "depriciated", "old", "__init__"
+    "node_modules", "old","__pycache__", "backups", "backup", "backs", "trash", "depriciated", "old", "__init__"
 }
 
 DEFAULT_EXCLUDE_PATTERNS: Set[str] = {
     "__init__*", "*.tmp", "*.log", "*.lock", "*.zip","*~"
 }
+REMOTE_RE = re.compile(r"^(?P<host>[^:\s]+@[^:\s]+):(?P<path>/.*)$")
+AllowedPredicate = Optional[Callable[[str], bool]]

@@ -4,8 +4,11 @@ froms = extract_froms(directory)
 imports = extract_imports(directory)
 funcs = extract_funcs(directory)
 classes = extract_class(directory)
-out = get_files_and_dirs("/home/solcatcher",add=True) # returns text
-
+##out = get_files_and_dirs("/home/solcatcher",add=True) # returns text
+files = get_globs('/path')
+input(files)
+files = get_files_and_dirs('/var/www/TDD/thedailydialectics/public',user_at_host='solcatcher')
+input(files)
 print(out)
 # capture locally
 out = get_files_and_dirs("/etc/nginx/sites-available",add=True) # returns text

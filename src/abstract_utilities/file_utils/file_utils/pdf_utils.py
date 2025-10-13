@@ -1,12 +1,4 @@
-import PyPDF2
-from typing import *
-from pdf2image import convert_from_path
-from abstract_utilities.path_utils import (is_file, mkdirs, get_directory, 
-                                           get_base_name, split_text, 
-                                           get_ext, get_file_name)
-from abstract_utilities.type_utils import is_str
-from abstract_utilities.cmd_utils import cmd_input
-from abstract_utilities.read_write_utils import write_to_file
+from .imports import *
 def if_none_return(obj: object, obj_2: object) -> object:
     """
     Return obj if obj_2 is None, otherwise return obj_2.

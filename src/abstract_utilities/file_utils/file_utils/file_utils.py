@@ -185,8 +185,8 @@ def get_files_and_dirs(
     else:
         kwargs.setdefault("mindepth", 1)
         kwargs.setdefault("maxdepth", 1)
-
-    roots = make_list(directory or paths)
+    paths = paths or []
+    roots = paths+make_list(directory)
     items = get_globs(roots, recursive=recursive, allowed=allowed, **kwargs)
 
     dirs = get_allowed_dirs(items, allowed=allowed, **kwargs)
