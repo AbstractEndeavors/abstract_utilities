@@ -1,7 +1,7 @@
 from .imports import *
+# -------- Public API drop-ins that mirror your originals --------
 from .filter_params import *
-
-
+from .file_filters import *
 # -------------------------------------------------------------
 # Wrapper: respects your original API and naming conventions
 # -------------------------------------------------------------
@@ -28,15 +28,17 @@ def get_globs(items, recursive: bool = True, allowed=None, **kwargs):
     glob_paths = []
     roots = [p for p in make_list(items) if p]
 
-    kwargs.setdefault("mindepth", 1)
+    kwargs.setdefault("mindepth", 0)
     if not recursive:
         kwargs.setdefault("maxdepth", 1)
-
+    
     for fs, root, _ in normalize_items(roots, **kwargs):
         # use the backend's recursive walker
         nu_items = fs.glob_recursive(root, **kwargs)
         if allowed:
+           
             nu_items = [n for n in nu_items if n and allowed(n)]
+            
         glob_paths += nu_items
     return glob_paths
 
@@ -131,7 +133,7 @@ def get_all_allowed_dirs(items, allowed=None, **kwargs):
 # Unified directory scan
 # -------------------------------------------------------------
 def get_files_and_dirs(
-    directory: str=None,
+    directory: str,
     cfg: Optional["ScanConfig"] = None,
     allowed_exts: Optional[Set[str]] = False,
     unallowed_exts: Optional[Set[str]] = False,
@@ -141,7 +143,6 @@ def get_files_and_dirs(
     add=False,
     recursive: bool = True,
     include_files: bool = True,
-    roots=None,
     **kwargs
 ):
     """
@@ -159,8 +160,7 @@ def get_files_and_dirs(
     allowed = make_allowed_predicate(cfg)
     items = []
     files = []
-    roots = make_list(roots) 
-    directory = make_list(directory)+roots
+    input(allowed)
     if recursive:
         items = get_globs(directory, recursive=recursive, allowed=allowed, **kwargs)
     else:

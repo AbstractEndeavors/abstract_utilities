@@ -6,7 +6,7 @@ from typing import Any, Callable, Iterable, Optional
 import inspect, sys
 from importlib import import_module
 from .type_utils import make_list
-from .robust_readers import get_for_all_tabs,call_for_all_tabs
+from .file_utils import get_for_all_tabs,call_for_all_tabs
 class _LazyAttr:
     """Lazy resolver proxy to avoid import-time cycles.
     First use triggers actual import & attribute lookup.

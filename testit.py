@@ -1,10 +1,10 @@
 from src.abstract_utilities.file_utils.file_utils.file_utils import *
-directory = "/var/www/api/abstract_logins/abstract_login/src/abstract_logins/app/imports/src/auth_utils/user_store/admin_utils/create_user.py"
+directory = "/home/computron/Documents/pythonTools/modules/src/modules/abstract_ide/src/abstract_ide/consoles/apiTab/functions"
 
 ##out = get_files_and_dirs("/home/solcatcher",add=True) # returns text
 
-dirs,files = get_files_and_dirs(directory='/path',user_at_host='solcatcher')
-input(dirs)
+dirs,files = get_files_and_dirs(directory=directory)
+input(files)
 print(out)
 # capture locally
 out = get_files_and_dirs("/etc/nginx/sites-available",add=True) # returns text
