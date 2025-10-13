@@ -113,13 +113,16 @@ class SSHFS:
 
 def normalize_items(paths: Iterable[str],user_at_host=None,**kwargs) -> List[tuple[PathBackend, str]]:
     pairs: List[tuple[PathBackend, str]] = []
-    host = user_at_host or kwargs.get('host')
-    
+    host = user_at_host or kwargs.get('host') or kwargs.get('user')
     for item in paths:
         if not item: continue
         m = REMOTE_RE.match(item)
         if m:
-            pairs.append((SSHFS(m.group("host") or user_at_host), m.group("path")))
+            fs_host = SSHFS(m.group("host"))
+            item = m.group("path") or item
+        elif host:
+           fs_host = SSHFS(host)
         else:
-            pairs.append((LocalFS(), item))
+           fs_host = LocalFS() 
+        pairs.append((fs_host, item))
     return pairs
