@@ -36,3 +36,4 @@ DEFAULT_EXCLUDE_PATTERNS: Set[str] = {
 }
 REMOTE_RE = re.compile(r"^(?P<host>[^:\s]+@[^:\s]+):(?P<path>/.*)$")
 AllowedPredicate = Optional[Callable[[str], bool]]
+DEFAULT_EXCLUDE_FILE_PATTERNS=DEFAULT_EXCLUDE_PATTERNS
