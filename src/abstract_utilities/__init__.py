@@ -119,3 +119,4 @@ from .error_utils import try_func
 from .class_utils import alias,get_class_inputs,get_set_attr
 from .ssh_utils import *
 from .env_utils import *
+from .path_utils import *
