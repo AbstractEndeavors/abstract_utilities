@@ -102,7 +102,10 @@ def safe_slice(
     except Exception:
         return obj if default is True else default if default else None
 
-
+def safe_join(*paths):
+    paths = list(paths)
+    paths = [path for path in paths if path]
+    return os.path.join(*paths)
 def safe_get(
     obj: Any,
     key: Union[int, str, None] = None,
