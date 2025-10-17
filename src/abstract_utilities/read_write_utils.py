@@ -13,7 +13,7 @@ Usage:
 """
 
 import os
-from .ssh_utils import run_cmd
+from .ssh_utils.utils import run_cmd
 from .abstract_classes import run_pruned_func
 _FILE_PATH_KEYS = ['file', 'filepath', 'file_path', 'path', 'directory', 'f', 'dst', 'dest']
 _CONTENTS_KEYS = ['cont', 'content', 'contents', 'data', 'datas', 'dat', 'src', 'source']
