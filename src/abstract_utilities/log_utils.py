@@ -229,7 +229,7 @@ def initialize_call_log(value=None,
 
     print_or_log(full_message,level=log_level)
     
-def get_json_call_response(value, status_code, data=None, logMsg=None, callLog=False):
+def get_json_call_response(value=None, status_code=None, data=None, logMsg=None, callLog=False):
     response_body = {}
     if status_code == 200:
         response_body["success"] = True

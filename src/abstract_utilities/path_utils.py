@@ -27,12 +27,9 @@ from .read_write_utils import read_from_file,write_to_file
 from .string_clean import eatAll
 from .list_utils import make_list
 from .type_utils import get_media_exts, is_media_type,MIME_TYPES
-def get_caller_path(i=1):
-    frame = inspect.stack()[i]
-    return os.path.abspath(frame.filename)
-def get_caller_dir(i=1):
-    abspath = get_caller_path(i+1)
-    return os.path.dirname(abspath)
+from .safe_utils import safe_join
+from .class_utils import get_caller_path.get_caller_dir
+
 def get_os_info():
     """
     Get Operating System Information
@@ -600,6 +597,45 @@ def get_safe_filename(path=None,basename=None):
 def get_safe_ext(path=None,basename=None):
     _,ext = get_safe_splitext(path=path,basename=basename)
     return ext
+def raw_create_dirs(*paths):
+    """Recursively create all directories along the given path."""
+    full_path = os.path.abspath(safe_join(*paths))
+    sub_parts = [p for p in full_path.split(os.sep) if p]
+
+    current_path = "/" if full_path.startswith(os.sep) else ""
+    for part in sub_parts:
+        current_path = safe_join(current_path, part)
+        os.makedirs(current_path, exist_ok=True)
+    return full_path
+
+
+def create_dirs(directory, child=None):
+    """Create directory and optional child path safely."""
+    full_path = os.path.abspath(safe_join(directory, child))
+    if not os.path.exists(full_path):
+        raw_create_dirs(full_path)
+    return full_path
+
+
+def get_base_dir(directory=None):
+    """Return given directory or _BASE_DIR fallback."""
+    return directory or _BASE_DIR
+
+
+def create_base_path(directory=None, child=None):
+    """Join base dir with child."""
+    directory = get_base_dir(directory)
+    return safe_join(directory, child)
+
+
+def create_base_dir(directory=None, child=None):
+    """Ensure existence of base directory path."""
+    full_path = create_base_path(directory, child)
+    if not os.path.exists(full_path):
+        raw_create_dirs(full_path)
+    return full_path
+
+
 
 def get_file_parts(path):
     

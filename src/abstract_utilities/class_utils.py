@@ -44,9 +44,9 @@ Dependencies:
 Each function is furnished with its own docstring that elaborates on its purpose, expected inputs, and outputs.
 
 """
-import inspect
-import json
-import functools
+import os,json,functools,inspect
+from typing import *
+
 def get_type_list() -> list:
     """Get a list of common Python types."""
     return ['None','str','int','float','bool','list','tuple','set','dict','frozenset','bytearray','bytes','memoryview','range','enumerate','zip','filter','map','property','slice','super','type','Exception','object']
@@ -370,3 +370,39 @@ def get_class_inputs(cls, *args, **kwargs):
         else:
             values[field] = getattr(cls(), field)
     return cls(**values)
+def get_caller(i: Optional[int] = None) -> str:
+    """
+    Return the filename of the calling frame.
+
+    Args:
+        i: Optional stack depth offset. 
+           None = immediate caller (depth 1).
+
+    Returns:
+        Absolute path of the file for the stack frame.
+    """
+    depth = 1 if i is None else int(i)
+    stack = inspect.stack()
+    if depth >= len(stack):
+        depth = len(stack) - 1
+    return stack[depth].filename
+
+
+def get_caller_path(i: Optional[int] = None) -> str:
+    """
+    Return the absolute path of the caller's file.
+    """
+    depth = 1 if i is None else int(i)
+    file_path = get_caller(depth + 1)
+    return os.path.realpath(file_path)
+
+
+def get_caller_dir(i: Optional[int] = None) -> str:
+    """
+    Return the absolute directory of the caller's file.
+    """
+    depth = 1 if i is None else int(i)
+    abspath = get_caller_path(depth + 1)
+    return os.path.dirname(abspath)
+
+

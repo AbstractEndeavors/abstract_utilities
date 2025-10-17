@@ -1,12 +1,12 @@
 # abstract_utilities/dynimport.py
 from __future__ import annotations
-import importlib, sys, os
 from functools import lru_cache
-from typing import Any, Callable, Iterable, Optional
-import inspect, sys
+from typing import *
+import importlib, sys, os, sys
+from typing import Optional
 from importlib import import_module
 from .type_utils import make_list
-from .file_utils import get_for_all_tabs,call_for_all_tabs
+
 class _LazyAttr:
     """Lazy resolver proxy to avoid import-time cycles.
     First use triggers actual import & attribute lookup.
@@ -181,14 +181,6 @@ def get_many_module_imports(*args):
             all_modules[symbol] = get_abstract_import(module = module,symbol=symbol)
     import_symbols(all_modules)
     return all_modules
-def get_caller_path():
-    frame = inspect.stack()[1]
-    return os.path.abspath(frame.filename)
-def get_caller_dir():
-    frame = inspect.stack()[1]
-    abspath = os.path.abspath(frame.filename)
-    return os.path.dirname(abspath)
-def call_for_all_tabs(root=None):
-    
-    root = root or get_caller_dir()
-    get_for_all_tabs(root)
+
+
+
