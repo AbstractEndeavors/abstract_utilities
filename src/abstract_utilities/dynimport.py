@@ -2,7 +2,7 @@
 from __future__ import annotations
 from functools import lru_cache
 from typing import *
-import importlib, sys, os, sys
+import importlib, sys, os, sys,inspect
 from typing import Optional
 from importlib import import_module
 from .type_utils import make_list
