@@ -13,7 +13,8 @@ Usage:
 """
 
 import os
-
+from .ssh_utils import run_cmd
+from .abstract_classes import run_pruned_func
 _FILE_PATH_KEYS = ['file', 'filepath', 'file_path', 'path', 'directory', 'f', 'dst', 'dest']
 _CONTENTS_KEYS = ['cont', 'content', 'contents', 'data', 'datas', 'dat', 'src', 'source']
 
@@ -90,7 +91,13 @@ def write_to_file(*args, **kwargs):
     return file_path
 
 
-def read_from_file(file_path):
+def read_from_file(file_path,**kwargs):
+    user_at_host = kwargs.get("user_at_host")
+    if user_at_host:
+        kwargs["cwd"] = kwargs.get('cwd') or os.path.dirname(file_path)
+        basename = os.path.basename(file_path)
+        kwargs["cmd"] = f'cat {basename}'
+        return run_pruned_func(run_cmd,**kwargs)
     """Read text content from a file."""
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
