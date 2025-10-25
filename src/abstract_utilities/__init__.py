@@ -122,3 +122,4 @@ from .env_utils import *
 from .path_utils import *
 from .file_utils import *
 from .file_utils import call_for_all_tabs
+from .string_utils import *

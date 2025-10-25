@@ -21,6 +21,7 @@ src/abstract_utilities/path_utils.py
 src/abstract_utilities/read_write_utils.py
 src/abstract_utilities/safe_utils.py
 src/abstract_utilities/string_clean.py
+src/abstract_utilities/string_utils.py
 src/abstract_utilities/tetsts.py
 src/abstract_utilities/thread_utils.py
 src/abstract_utilities/time_utils.py
