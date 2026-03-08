@@ -69,7 +69,7 @@ def make_dirs(*paths, exist_ok=True, **kwargs):
         path = ""
         for temp_path in paths:
             path = os.path.join(path,temp_path)
-            os.makedirs(full_dir, exist_ok=exist_ok)
+            os.makedirs(path, exist_ok=exist_ok)
     return path
 def make_path(path, home_dir=None, file=None, **kwargs):
     if not path:
