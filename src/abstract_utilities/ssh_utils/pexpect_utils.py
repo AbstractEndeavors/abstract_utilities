@@ -1,6 +1,4 @@
-from .classes import *
-from .utils import *
-from ..env_utils import *
+from .imports import *
 # pexpect is optional; import lazily if you prefer
 
 # keep your execute_cmd; add a thin wrapper that supports stdin text cleanly
@@ -36,17 +34,17 @@ def exec_sudo_capture(
     """
     if password is None:
         password = get_env_value(key=key) if key else get_sudo_password()
-    password = f"{password}\n" if password else password
+
     sudo_cmd = f"sudo -S -k {cmd}"
 
     if user_at_host:
         # build the remote command (bash -lc + optional cd)
         remote = get_remote_cmd(cmd=sudo_cmd, user_at_host=user_at_host, cwd=cwd)
         # feed password to remote's stdin (ssh forwards stdin)
-        out = execute_cmd_input(remote, input_text=password,
+        out = execute_cmd_input(remote, input_text=password + "\n",
                                 shell=True, text=True, capture_output=True)
     else:
-        out = execute_cmd_input(sudo_cmd, input_text=password,
+        out = execute_cmd_input(sudo_cmd, input_text=password + "\n",
                                 shell=True, text=True, capture_output=True, cwd=cwd)
 
     if print_output:
@@ -123,8 +121,8 @@ def cmd_run(
             out = execute_cmd(remote, shell=True, text=True, capture_output=True)
         else:
             out = execute_cmd(cmd, shell=True, text=True, capture_output=True, cwd=cwd)
-##        if print_output:
-##            print_cmd(cmd, out or "")
+        if print_output:
+            print_cmd(cmd, out or "")
         return out or ""
 
     # ---- legacy file-backed path (unchanged in spirit) ----
@@ -150,10 +148,9 @@ def cmd_run(
             if lines and lines[-1].strip() == 'END_OF_CMD':
                 break
 
-##    if print_output:
-##        print(full_cmd)
-##        with open(output_text, 'r') as f:
-##            print_cmd(full_cmd, f.read().strip())
+    if print_output:
+        with open(output_text, 'r') as f:
+            print_cmd(full_cmd, f.read().strip())
 
     try:
         os.remove(output_text)
@@ -212,8 +209,8 @@ def exec_expect(
 
     child.expect(pexpect.EOF)
     out = child.before.decode("utf-8", errors="ignore")
-##    if print_output:
-##        print_cmd(command, out)
+    if print_output:
+        print_cmd(command, out)
 
     return child.exitstatus if child.exitstatus is not None else 0
 
@@ -261,7 +258,6 @@ def cmd_run_sudo(
     remote_sudo_line = f'printf %s {shlex.quote(pw)} | {sudo_cmd}'
     remote_full = get_remote_cmd(cmd=remote_sudo_line, user_at_host=user_at_host, cwd=cwd)
     return cmd_run(remote_full, output_text=output_text, print_output=print_output)
-
 def pexpect_cmd_with_args(
     command: str,
     child_runs: list,
@@ -310,6 +306,3 @@ def pexpect_cmd_with_args(
     else:
         if print_output:
             print_cmd(command, out)
-
-    return child.exitstatus if child.exitstatus is not None else 0
-cmd_input = execute_cmd_input

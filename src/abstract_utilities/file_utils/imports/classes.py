@@ -50,19 +50,20 @@ def is_file(
     env_path=None,
     **kwargs
     ):
-    contingencies = list(set([user_at_host,password,key,env_path]))
-    len_contingencies = len(contingencies)
-    is_potential = (len_contingencies >1 or (None not in contingencies))
-    if not is_potential:
-        return os.path.isfile(path)
-    cmd = get_item_check_cmd(path,file=True)
-    return run_cmd(cmd=cmd,
-            user_at_host=user_at_host,
-            password=password,
-            key=key,
-            env_path=env_path,
-            **kwargs
-            )
+    if path:
+        contingencies = list(set([user_at_host,password,key,env_path]))
+        len_contingencies = len(contingencies)
+        is_potential = (len_contingencies >1 or (None not in contingencies))
+        if not is_potential:
+            return os.path.isfile(path)
+        cmd = get_item_check_cmd(path,file=True)
+        return run_cmd(cmd=cmd,
+                user_at_host=user_at_host,
+                password=password,
+                key=key,
+                env_path=env_path,
+                **kwargs
+                )
 def is_dir(
     path,
     user_at_host=None,
@@ -71,19 +72,20 @@ def is_dir(
     env_path=None,
     **kwargs
     ):
-    contingencies = list(set([user_at_host,password,key,env_path]))
-    len_contingencies = len(contingencies)
-    is_potential = (len_contingencies >1 or (None not in contingencies))
-    if not is_potential:
-        return os.path.isdir(path)
-    cmd = get_item_check_cmd(path,file=False,directory=True)
-    return run_cmd(cmd=cmd,
-            user_at_host=user_at_host,
-            password=password,
-            key=key,
-            env_path=env_path,
-            **kwargs
-            )
+    if path:
+        contingencies = list(set([user_at_host,password,key,env_path]))
+        len_contingencies = len(contingencies)
+        is_potential = (len_contingencies >1 or (None not in contingencies))
+        if not is_potential:
+            return os.path.isdir(path)
+        cmd = get_item_check_cmd(path,file=False,directory=True)
+        return run_cmd(cmd=cmd,
+                user_at_host=user_at_host,
+                password=password,
+                key=key,
+                env_path=env_path,
+                **kwargs
+                )
 def is_exists(
     path,
     user_at_host=None,
@@ -92,20 +94,21 @@ def is_exists(
     env_path=None,
     **kwargs
     ):
-    contingencies = list(set([user_at_host,password,key,env_path]))
-    len_contingencies = len(contingencies)
-    is_potential = (len_contingencies >1 or (None not in contingencies))
-    if not is_potential:
-        return os.path.exists(path)
-    if is_potential == True:
-        cmd = get_item_check_cmd(path,exists=True)
-        return run_cmd(cmd=cmd,
-                user_at_host=user_at_host,
-                password=password,
-                key=key,
-                env_path=env_path,
-                **kwargs
-                )
+    if path:
+        contingencies = list(set([user_at_host,password,key,env_path]))
+        len_contingencies = len(contingencies)
+        is_potential = (len_contingencies >1 or (None not in contingencies))
+        if not is_potential:
+            return os.path.exists(path)
+        if is_potential == True:
+            cmd = get_item_check_cmd(path,exists=True)
+            return run_cmd(cmd=cmd,
+                    user_at_host=user_at_host,
+                    password=password,
+                    key=key,
+                    env_path=env_path,
+                    **kwargs
+                    )
 def is_any(
     path,
     user_at_host=None,
@@ -114,25 +117,26 @@ def is_any(
     env_path=None,
     **kwargs
     ):
-    contingencies = list(set([user_at_host,password,key,env_path]))
-    len_contingencies = len(contingencies)
-    is_potential = (len_contingencies >1 or (None not in contingencies))
-    if not is_potential:
-        return os.path.exists(path)
-    if is_potential == True:
-        out_js = get_all_item_check_cmd(path,file=True,directory=True,exists=True)
-        for typ,cmd in out_js.items():
-            response = run_cmd(cmd=cmd,
-                    user_at_host=user_at_host,
-                    password=password,
-                    key=key,
-                    env_path=env_path,
-                    **kwargs
-                    )
-            result = "__OK__" in (response or "")
-            if result:
-                return typ
-    return None
+    if path:
+        contingencies = list(set([user_at_host,password,key,env_path]))
+        len_contingencies = len(contingencies)
+        is_potential = (len_contingencies >1 or (None not in contingencies))
+        if not is_potential:
+            return os.path.exists(path)
+        if is_potential == True:
+            out_js = get_all_item_check_cmd(path,file=True,directory=True,exists=True)
+            for typ,cmd in out_js.items():
+                response = run_cmd(cmd=cmd,
+                        user_at_host=user_at_host,
+                        password=password,
+                        key=key,
+                        env_path=env_path,
+                        **kwargs
+                        )
+                result = "__OK__" in (response or "")
+                if result:
+                    return typ
+
 class PathBackend(Protocol):
     def join(self, *parts: str) -> str: ...
     def isfile(self, path: str) -> bool: ...
