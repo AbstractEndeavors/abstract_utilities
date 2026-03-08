@@ -66,7 +66,7 @@ def make_dirs(*paths, exist_ok=True, **kwargs):
         resp = run_pruned_func(run_cmd, **kwargs)
        
     else:
-        os.makedirs(*paths, exist_ok=exist_ok)
+        os.makedirs(*[str(path) for path in paths], exist_ok=exist_ok)
     return path
 def make_path(path, home_dir=None, file=None, **kwargs):
     if not path:
