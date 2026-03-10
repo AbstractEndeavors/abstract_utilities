@@ -3,3 +3,4 @@ from ...ssh_utils import is_file
 from ...type_utils import is_bool
 from ...safe_utils import safe_split
 from ...compare_utils import line_contains
+from ...string_utils import eatAll,eatInner,eatOuter
