@@ -77,7 +77,6 @@ def correct_kwargs(**kwargs):
     
 def collect_filepaths(*args,**kwargs) -> List[str]:
     params = define_all_params(*args,**kwargs)
-    input(params.allowed)
     # your existing helpers (get_dirs, get_globs, etc.) stay the same
     original_dirs = get_allowed_dirs(params.directories, allowed=params.allowed)
     original_globs = get_globs(original_dirs)

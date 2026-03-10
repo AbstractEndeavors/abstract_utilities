@@ -114,18 +114,15 @@ def get_function_file_paths(functions_dir):
     filepaths=[]
     if_fun_dir = isDir(functions_dir)
     if if_fun_dir != None:
-        input(if_fun_dir)
         if if_fun_dir:
             CFG = define_defaults(allowed_exts='.py',
                 unallowed_exts = True,
                 exclude_types = True,
                 exclude_dirs = True,
                 exclude_patterns = True)
-            input(CFG)
             _,filepaths = get_files_and_dirs(functions_dir,cfg=CFG)
         else:
             filepaths = [FUNCS_DIR]
-    input(filepaths)
     return filepaths
 def apply_inits(root=None,tab_control=True):
     root = root or get_caller_dir()

@@ -324,8 +324,7 @@ def define_all_params(*args, **kwargs) -> AllParams:
         "allowed": allowed,
         "include_files": include_files,
         "recursive": recursive,  # override existing value safely
-    })
-    input(merged)   
+    })   
     # Step 6: instantiate AllParams
     return AllParams(**merged)
 def get_file_filters(*args, **kwargs) -> AllParams:

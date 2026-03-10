@@ -46,4 +46,3 @@ media_types = {
 new_media_types = {}
 for key,value in media_types.items():
     new_media_types[key] = set(value.keys())
-input(new_media_types)
