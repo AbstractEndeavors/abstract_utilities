@@ -1,4 +1,27 @@
 from .imports import *
+"""
+string_clean.py
+
+This module provides functions for cleaning and manipulating strings.
+
+Usage:
+    import abstract_utilities.string_clean as string_clean
+
+Functions:
+- quoteIt(st: str, ls: list) -> str: Quotes specific elements in a string.
+- eatInner(x: str or list, ls: list) -> any: Removes characters from the inner part of a string or list.
+- eatOuter(x: str or list, ls: list) -> any: Removes characters from the outer part of a string or list.
+- eatAll(x: str or list, ls: list) -> any: Removes characters from both the inner and outer parts of a string or list.
+- safe_split(obj, ls): Safely splits a string using multiple delimiters.
+- clean_spaces(obj: str) -> str: Removes leading spaces and tabs from a string.
+- truncate_text(text, max_chars): Truncates a text to a specified maximum number of characters, preserving the last complete sentence or word.
+
+This module is part of the `abstract_utilities` package.
+
+Author: putkoff
+Date: 05/31/2023
+Version: 0.1.2
+"""
 def quoteIt(st: str, ls: list) -> str:
     """
     Quotes specific elements in a string.
