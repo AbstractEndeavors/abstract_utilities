@@ -1,4 +1,6 @@
 from .imports import *
+DEFAULT_FILE_NAME = '.env'
+DEFAULT_KEY = 'MY_PASSWORD'
 class abstractEnv:
     def __init__(self,key='MY_PASSWORD',file_name=None,path=os.getcwd(),deep_scan=False):
         file_name = file_name or '.env'
