@@ -71,7 +71,6 @@ class abstractEnv:
         Returns:
             str: The value corresponding to the key if found, otherwise None.
         """
-        self.env_value = self.find_and_read_env_file(key=self.key,file_name=self.file_name, path=self.path,initialize=False,deep_scan=self.deep_scan)
         # Set the default start_path to the current directory if it's None
         # Try to find the file in the start_path
         key = key or self.key
