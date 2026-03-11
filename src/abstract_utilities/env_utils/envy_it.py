@@ -1,5 +1,5 @@
 from .imports import *
-from .AbstractEnv import abstractEnv
+from .abstractEnv import abstractEnv
 def get_env_value(key:str=None,path:str=None,file_name:str=None,deep_scan=False):
     abstract_env = abstractEnv(key=key, file_name=file_name, path=path,deep_scan=deep_scan)
 
