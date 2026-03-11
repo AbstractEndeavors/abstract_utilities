@@ -1,32 +1,4 @@
 from .imports import *
-def split_eq(line):
-    """
-    Splits a string at the first equals sign '=' and cleans up the key and value.
-
-    Args:
-        line (str): The string to be split.
-
-    Returns:
-        list: A list containing the cleaned key and value. If '=' is not found, returns [line, None].
-    """
-    if '=' in line:
-        key_side = line.split('=')[0]
-        value_side = line[len(key_side+'='):]
-        return [eatOuter(key_side,[' ','','\t']),eatAll(value_side,[' ','','\t','\n'])]
-    return [line,None]
-def dotenv_load(path:str=None):
-    """
-    Safely load the .env file if it exists at a specified path.
-
-    Args:
-        path (str): The path to load the .env file from. If None, no operation is performed. 
-
-    Returns:
-        bool: True if the .env file is successfully loaded, otherwise False.
-    """
-    if path and os.path.isfile(path) and os.path.basename(path)[0] == '.':
-        load_dotenv(path)
-        return True
 class abstractEnv:
     def __init__(self,key='MY_PASSWORD',file_name=None,path=os.getcwd(),deep_scan=False):
         file_name = file_name or '.env'
@@ -153,33 +125,5 @@ class abstractEnv:
         if safe_env_load(path):
             return os.getenv(key)
         return find_and_read_env_file(file_name=file_name, key=key, path=path_ls)
-def get_env_value(key:str=None,path:str=None,file_name:str=None,deep_scan=False):
-    abstract_env = AbstractEnv(key=key, file_name=file_name, path=path,deep_scan=deep_scan)
-    """
-    Retrieves the value of a specified environment variable from a .env file.
 
-    Args:
-        key (str, optional): The key to search for in the .env file. Defaults to None.
-        path (str, optional): The path to the .env file. Defaults to None.
-        file_name (str, optional): The name of the .env file. Defaults to None.
-
-    Returns:
-        str: The value of the environment variable if found, otherwise None.
-    """
-    return abstract_env.env_value
-
-def get_env_path(key:str=None,path:str=None,file_name:str=None,deep_scan=False):
-    abstract_env = AbstractEnv(key=key, file_name=file_name, path=path,deep_scan=deep_scan)
-    """
-    Retrieves the value of a specified environment variable from a .env file.
-
-    Args:
-        key (str, optional): The key to search for in the .env file. Defaults to None.
-        path (str, optional): The path to the .env file. Defaults to None.
-        file_name (str, optional): The name of the .env file. Defaults to None.
-
-    Returns:
-        str: The value of the environment variable if found, otherwise None.
-    """
-    return abstract_env.env_path
 AbstractEnv = abstractEnv
