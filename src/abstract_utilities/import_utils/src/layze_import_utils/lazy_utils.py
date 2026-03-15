@@ -1,5 +1,6 @@
 from ...imports import *
 from .nullProxy import nullProxy,nullProxy_logger
+from ..import_utils import inject_from_imports_map,get_imports
 @lru_cache(maxsize=None)
 def lazy_import_single(name: str,fallback=None):
     """
@@ -39,3 +40,11 @@ def lazy_import(name: str, *attrs,fallback=None):
     else:
         obj = lazy_import_single(name,fallback=fallback)
     return obj
+def lazy_import_star(files, *, self=None):
+    imports_map = get_imports(files)
+
+    return inject_from_imports_map(
+        imports_map,
+        into=globals(),
+        self=self
+    )
