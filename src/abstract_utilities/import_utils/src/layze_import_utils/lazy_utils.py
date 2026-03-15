@@ -84,47 +84,50 @@ def lazy_import_star(files, *, self=None):
         into=globals(),
         self=self
     )
-def dynamic_star(pkg_name: str, *, into=None, self=None):
+def lazy_import_star(targets, *, into=None, self=None):
     """
-    Import all public functions/classes from package modules.
-    Optionally bind methods to `self`.
+    Supports:
+    - module names
+    - packages
+    - filesystem paths
     """
-    import inspect
-    from types import MethodType
 
-    ns = into if into else globals()
-    exported = {}
+    import importlib
+    import pkgutil
+    from pathlib import Path
 
-    pkg = dynamic_import(pkg_name)
+    ns = into or globals()
 
-    try:
-        modules = pkgutil.iter_modules(pkg.__path__)
-    except Exception:
-        return exported
+    for target in targets:
 
-    for _, modname, _ in modules:
+        # ----------------------------
+        # MODULE / PACKAGE IMPORT
+        # ----------------------------
+        try:
+            mod = importlib.import_module(target)
 
-        mod = dynamic_import(f"{pkg_name}.{modname}")
+            if hasattr(mod, "__path__"):
+                # package → import all submodules
+                for _, name, _ in pkgutil.iter_modules(mod.__path__):
+                    sub = importlib.import_module(f"{mod.__name__}.{name}")
+                    ns[name] = sub
+            else:
+                # single module
+                ns[target.split(".")[-1]] = mod
 
-        for name, obj in vars(mod).items():
+            continue
 
-            if name.startswith("_"):
-                continue
+        except Exception:
+            pass
 
-            if inspect.isfunction(obj):
+        # ----------------------------
+        # FILESYSTEM IMPORT
+        # ----------------------------
+        p = Path(target)
 
-                params = list(inspect.signature(obj).parameters.values())
+        if p.exists():
+            imports_map = get_imports([str(p)])
+            inject_from_imports_map(imports_map, self=self)
 
-                if self and params and params[0].name == "self":
-                    bound = MethodType(obj, self)
-                    setattr(self, name, bound)
-                    exported[name] = bound
-                else:
-                    ns[name] = obj
-                    exported[name] = obj
-
-            elif inspect.isclass(obj):
-                ns[name] = obj
-                exported[name] = obj
-
-    return exported
+        else:
+            nullProxy_logger.warning(f"[lazy_import] Could not import {target}")
