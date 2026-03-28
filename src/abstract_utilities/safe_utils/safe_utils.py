@@ -14,7 +14,7 @@ class PathOutsideBase(Exception):
     pass
 def is_safe_instance(obj, *types):
     is_type=False
-    if obj and typ:
+    if obj and types:
         try:
             is_type = isinstance(obj, types)
         except Exception as e:
