@@ -316,3 +316,12 @@ def get_default_documents_dir(path=None):
 def get_default_pictures_dir(path=None):
     home_dir = get_home_dir(path)
     return get_spec_dir('Pictures',home_dir)
+def get_default_downloads_dir(path=None):
+    home_dir = get_home_dir(path)
+    return get_spec_dir('Downloads',home_dir)
+def get_default_music_dir(path=None):
+    home_dir = get_home_dir(path)
+    return get_spec_dir('Music',home_dir)
+def get_default_desktop_dir(path=None):
+    home_dir = get_home_dir(path)
+    return get_spec_dir('Desktop',home_dir)
