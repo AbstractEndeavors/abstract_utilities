@@ -8,7 +8,7 @@ def get_size_to_paths(directory,exts):
     size_to_paths = defaultdict(list)
     dirs,file_paths = get_files_and_dirs(directory,allowed_exts=exts)
     for file_path in file_paths:
-        size_to_paths[os.path.getsize(pdf_path)].append(file_path)
+        size_to_paths[os.path.getsize(file_path)].append(file_path)
     return size_to_paths
 def dedupe_media(directory,exts):
     size_to_paths = get_size_to_paths(directory,exts)
