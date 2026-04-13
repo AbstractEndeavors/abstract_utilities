@@ -36,12 +36,16 @@ def dedupe_media(directory,exts):
             full_h = full_hash(quick_matches[0])
             hash_to_paths[full_h].extend(quick_matches)
     return hash_to_paths
-def dedupe_and_save_media(directory,exts):
+def dedupe_hash_to_paths(directory,exts):
     hash_to_paths_js = {}
     hash_to_paths = dedupe_media(directory,exts)
     hash_to_paths_js["hash_to_paths"] = hash_to_paths
     hash_to_paths_js["dedups"] = {h: paths for h, paths in hash_to_paths.items() if len(paths) >= 2}
     hash_to_paths_js["singles"] = {h: paths for h, paths in hash_to_paths.items() if len(paths) < 2}
-    file_path = os.path.join(directory,'hash_to_paths.json')
+    return hash_to_paths_js
+def dedupe_and_save_hash_to_paths(directory,exts,basename=None):
+    basename = basename or 'hash_to_paths.json'
+    hash_to_paths_js = dedupe_hash_to_paths(directory,exts)
+    file_path = os.path.join(directory,basename)
     safe_dump_to_json(data=hash_to_paths_js,file_path=file_path)
     return file_path
