@@ -13,7 +13,7 @@ def get_media_map(categories=None):
 
 def derive_media_type(obj):
     
-    _,ext = os.path.splitext(str(obj))[-1]
+    ext = os.path.splitext(str(obj))[-1]
     if ext:
         for typ,exts in media_maps.items():
             if ext in exts:
