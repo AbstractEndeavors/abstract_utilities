@@ -12,8 +12,8 @@ def get_media_map(categories=None):
     return {c: MEDIA_TYPES[c] for c in cats if c in MEDIA_TYPES}
 
 def derive_media_type(obj):
-    safe_get_ext()
-    _,ext = os.path.splitext(obj)[-1]
+    
+    _,ext = os.path.splitext(str(obj))[-1]
     if ext:
         for typ,exts in media_maps.items():
             if ext in exts:
