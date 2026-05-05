@@ -41,7 +41,7 @@ MIME_TYPES = {
         '.wmv':   'video/x-ms-wmv',
         '.3gp':   'video/3gpp',
         '.mpeg':  'video/mpeg',
-        '.mpg':   'video/mpg'
+        '.mpg':   'video/mpg',
         '.m4v':   'video/x-m4v',
         '.f4v':   'video/x-f4v',
         '.asf':   'video/x-ms-asf',
@@ -84,7 +84,7 @@ MIME_TYPES = {
         '.cfg':   'text/plain',
         '.toml':  'application/toml',
         '.csv':   'text/csv',
-        '.tsv':   'text/tab-separated-values'
+        '.tsv':   'text/tab-separated-values',
         '.epub':  'application/epub+zip',
         '.mobi':  'application/x-mobipocket-ebook',
         '.azw':   'application/vnd.amazon.ebook',
@@ -204,7 +204,7 @@ MIME_TYPES = {
         '.dll':   'application/vnd.microsoft.portable-executable',
         '.bin':   'application/octet-stream',
         '.deb':   'application/vnd.debian.binary-package',
-        '.rpm':   'application/x-rpm'
+        '.rpm':   'application/x-rpm',
         '.app':   'application/x-executable',
         '.ipa':   'application/x-itunes-ipa',
         '.apk':   'application/vnd.android.package-archive',
@@ -237,7 +237,7 @@ MIME_TYPES = {
         '.sas7bdat': 'application/x-sas-data',
         '.sav':      'application/x-spss-sav',
     }
-})
+}
 # And just the sets, if you only need to test ext‐membership:
 MEDIA_TYPES = make_key_map(MIME_TYPES)
 
